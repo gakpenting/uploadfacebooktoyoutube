@@ -209,13 +209,16 @@ var questions = [
       .then(function (response) {
           //handle success
           setTimeout(function(){
-            document.getElementsByTagName("h1")[0].innerText=response.data
+            document.getElementsByTagName("h1")[0].innerHTML=response.data
           },2000)
           // 
           console.log(response.data);
       })
       .catch(function (response) {
           //handle error
+          setTimeout(function(){
+            document.getElementsByTagName("h1")[0].innerHTML=response.data
+          },2000)
           // document.getElementsByTagName("h1")[0].innerText=response.data
           console.log(response.data);
       });

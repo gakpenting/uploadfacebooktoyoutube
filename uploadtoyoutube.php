@@ -1,7 +1,12 @@
 <?php     
 set_time_limit(100000);
-        
-$ch = curl_init($_POST['site']);
+session_start();
+if(!empty($_POST['site'])&&!empty($_POST['title'])){
+  $_SESSION['site']=$_POST['site'];        
+  $_SESSION['title']=$_POST['title'];        
+}
+
+$ch = curl_init($_SESSION['site']);
   // $ch = curl_init('https://www.facebook.com/betbreaks/videos/537429956650529/');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1');
@@ -27,18 +32,18 @@ if(empty($hai2)){
   echo "cant upload a facebook video that needed login first please upload another video check if video need to be login first in incognito window in chrome or private browser firefox";
 }else{
   // echo $hai7;
-  $title=$_POST['title'];
+  $title=$_SESSION['title'];
   upload($title);
 }
 
-function upload($title,$public="unlisted"){
+function upload($title,$public="public"){
 
 if (!file_exists('vendor/autoload.php')) {
   throw new \Exception('please run "composer require google/apiclient:~2.0" in "' . __DIR__ .'"');
 }
 
 require_once  'vendor/autoload.php';
-session_start();
+
 
 /*
  * You can acquire an OAuth 2.0 client ID and client secret from the
@@ -50,8 +55,8 @@ session_start();
  $dotenv = new Dotenv\Dotenv(__DIR__, 'myconfig');
  $dotenv->load();
  
-$OAUTH2_CLIENT_ID = getenv('S3_BUCKET');
-$OAUTH2_CLIENT_SECRET = getenv('SECRET_KEY');
+$OAUTH2_CLIENT_ID = getenv('CLIENT_ID');
+$OAUTH2_CLIENT_SECRET = getenv('CLIENT_SECRET');
 
 $client = new Google_Client();
 $client->setClientId($OAUTH2_CLIENT_ID);
