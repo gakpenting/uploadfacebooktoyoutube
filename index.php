@@ -202,7 +202,7 @@ var questions = [
     bodyFormData.set('title', questions[1].value);
     axios({
       method: 'post',
-      url: '/uploadtoyoutube.php',
+      url: '/ffb/uploadtoyoutube.php',
       data: bodyFormData,
       config: { headers: {'Content-Type': 'multipart/form-data' }}
   })

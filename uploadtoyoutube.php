@@ -1,19 +1,49 @@
 <?php     
 set_time_limit(100000);
 session_start();
+
 if(!empty($_POST['site'])&&!empty($_POST['title'])){
   $_SESSION['site']=$_POST['site'];        
   $_SESSION['title']=$_POST['title'];        
 }
-
+header('Content-Type: text/plain');
 $ch = curl_init($_SESSION['site']);
-  // $ch = curl_init('https://www.facebook.com/betbreaks/videos/537429956650529/');
+//   $ch = curl_init('https://m.facebook.com/story.php?story_fbid=1642397109211310&id=100003231098194');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1');
 //   print_r(curl_exec($ch));
 curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: text/plain')); 
-$hai=curl_exec($ch);
-$hai2=strpos($hai, 'sd_src_no_ratelimit');
+$haiyo=curl_exec($ch);
+
+if(empty(checkWeb($haiyo))){
+    if(empty(checkMobile($haiyo))){
+     echo "cant upload a facebook video that needed login first please upload another video check if video need to be login first in incognito window in chrome or private browser firefox";   
+    }else{
+        mobileDownload($haiyo);
+        // echo "mobile";
+      
+  $title=$_SESSION['title'];
+  upload($title);      
+    }
+}else{
+    webDownload($haiyo);
+    // echo "web";
+
+    $title=$_SESSION['title'];
+  upload($title);
+}
+
+
+function checkWeb($hai){
+    $hai2=strpos($hai, 'sd_src_no_ratelimit');
+    return $hai2;
+}
+function checkMobile($hai){
+    $slebor=strpos($hai,"/video_redirect/");
+    return $slebor;
+}
+function webDownload($hai){
+    $hai2=strpos($hai, 'sd_src_no_ratelimit');
 $hai3=substr($hai, $hai2);
 $hai4=strpos($hai3, ',');
 $hai5=substr($hai3, 0,$hai4);
@@ -27,15 +57,24 @@ curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_exec($ch);
 curl_close($ch);
 fclose($fp);
-
-if(empty($hai2)){
-  echo "cant upload a facebook video that needed login first please upload another video check if video need to be login first in incognito window in chrome or private browser firefox";
-}else{
-  // echo $hai7;
-  $title=$_SESSION['title'];
-  upload($title);
 }
+function mobileDownload($hai){
+    $slebor=strpos($hai,"/video_redirect/");
+$slebor2=substr($hai, $slebor);
+$slebor3=strpos($slebor2,"\" target=");
+$slebor4=substr($slebor2, 0,$slebor3);
+$slebor5= $slebor4;
+$slebor6=strpos($slebor5,"https");
+$slebor7=urldecode(substr($slebor5,$slebor6));
+$ch = curl_init($slebor7);
+$fp = fopen(__DIR__.'/video.mp4', 'wb');
+curl_setopt($ch, CURLOPT_FILE, $fp);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_exec($ch);
+curl_close($ch);
+fclose($fp);
 
+}
 function upload($title,$public="public"){
 
 if (!file_exists('vendor/autoload.php')) {
@@ -155,9 +194,9 @@ if ($client->getAccessToken()) {
 
 
     $htmlBody .= "<h3>Video Uploaded</h3><ul>";
-    $htmlBody .= sprintf('<li>%s (%s)</li>',
+    $htmlBody .= sprintf('<li>%s <a href="https://www.youtube.com/watch?v=%s">https://www.youtube.com/watch?v=%s</a></li>',
         $status['snippet']['title'],
-        $status['id']);
+        $status['id'],$status['id']);
 
     $htmlBody .= '</ul>';
 
