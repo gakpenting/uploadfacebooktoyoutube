@@ -1,7 +1,9 @@
 # how to use
+
+[![donatepaypal](https://img.shields.io/badge/PAYPAL-DONATE-brightgreen?style=for-the-badge&logo=paypal)](https://paypal.me/rinoakbr)
+
 first acquire an OAuth 2.0 client ID and client secret from the
 
- {{ Google Cloud Console }} <{{ https://cloud.google.com/console }}>  
 go to  https://cloud.google.com/console after that click on **api & services** like the image below:  
 
 [![https://gyazo.com/7fc35ddaae1a81886844c8a019c257e8](https://i.gyazo.com/7fc35ddaae1a81886844c8a019c257e8.png)](https://gyazo.com/7fc35ddaae1a81886844c8a019c257e8)  
